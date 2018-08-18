@@ -9,4 +9,6 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)		
+(load custom-file)
+
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
