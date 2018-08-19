@@ -11,4 +11,11 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+; run js2-mode for js files
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+; load environment variables
+(exec-path-from-shell-initialize)
+
+; Toggle fullscreen on Ctrl+return
+(global-set-key (kbd "C-<return>") 'toggle-frame-fullscreen)
