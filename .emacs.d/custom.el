@@ -14,6 +14,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice nil)
  '(js-indent-level 2)
+ '(js2-mode-show-strict-warnings nil)
  '(menu-bar-mode nil)
  '(package-selected-packages
    '(flycheck js-comint xref-js2 js2-refactor magit racket-mode nim-mode sml-mode ledger-mode exec-path-from-shell js2-mode solarized-theme))

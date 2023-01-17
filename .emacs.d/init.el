@@ -26,7 +26,7 @@
 (setq-default flycheck-temp-prefix ".flycheck")
 (setq-default flycheck-disabled-checkers
 	      (append flycheck-disabled-checkers
-		      '(javascript-jshint)))
+		      '(javascript-jshint javascript-standard)))
 
 (defun js2-mode-use-eslint-indent ()
   (let ((json-object-type 'hash-table)
