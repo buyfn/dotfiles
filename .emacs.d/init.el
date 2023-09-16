@@ -38,6 +38,24 @@
         (aref (gethash "indent" (gethash  "rules" (json-read-from-string json-config))) 1)))))
 
 (add-hook 'js2-mode-hook #'js2-mode-use-eslint-indent)
+(add-hook 'sgml-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook 'emmet-mode)
+
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  (company-mode +1))
+
+(setq company-tooltip-align-annotations t)
+
+(add-hook 'before-save-hook 'tide-format-before-save)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
 
 ; load environment variables
 (exec-path-from-shell-initialize)
