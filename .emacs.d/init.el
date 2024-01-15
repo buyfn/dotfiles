@@ -16,6 +16,8 @@
 (require 'js-comint)
 (require 'flycheck)
 
+(setq completion-ignore-case t)
+
 ; run js2-mode for js files
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-hook 'js2-mode-hook #'js2-refactor-mode)
@@ -56,6 +58,13 @@
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
+
+; Ledger mode autocomplete
+(add-hook 'ledger-mode-hook
+          (lambda ()
+                 (setq-local tab-always-indent 'complete)
+                 (setq-local completion-cycle-threshold t)
+                 (setq-local ledger-complete-in-steps t)))
 
 ; load environment variables
 (exec-path-from-shell-initialize)

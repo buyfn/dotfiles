@@ -15,9 +15,15 @@
  '(initial-buffer-choice nil)
  '(js-indent-level 2)
  '(js2-mode-show-strict-warnings nil)
+ '(ledger-reports
+   '(("test" "ledger bal")
+     ("bal" "%(binary) -f %(ledger-file) bal")
+     ("reg" "%(binary) -f %(ledger-file) reg")
+     ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
+     ("account" "%(binary) -f %(ledger-file) reg %(account)")))
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(company tide typescript-mode emmet-mode elixir-mode flycheck js-comint xref-js2 js2-refactor magit racket-mode nim-mode sml-mode ledger-mode exec-path-from-shell js2-mode solarized-theme))
+   '(company-ledger company tide typescript-mode emmet-mode elixir-mode flycheck js-comint xref-js2 js2-refactor magit racket-mode nim-mode sml-mode ledger-mode exec-path-from-shell js2-mode solarized-theme))
  '(pascal-indent-level 2)
  '(scroll-bar-mode nil)
  '(sml-indent-level 2)
@@ -27,4 +33,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#002b36" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 160 :width normal :foundry "nil" :family "IBM Plex Mono")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#002b36" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 140 :width normal :foundry "nil" :family "Monaspace Neon")))))
