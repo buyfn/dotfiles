@@ -43,6 +43,9 @@
 (add-hook 'sgml-mode-hook 'emmet-mode)
 (add-hook 'css-mode-hook 'emmet-mode)
 
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+
 (defun setup-tide-mode ()
   (interactive)
   (tide-setup)
@@ -55,7 +58,7 @@
 (setq company-tooltip-align-annotations t)
 
 (add-hook 'before-save-hook 'tide-format-before-save)
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
+(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
 
 (add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
 
@@ -79,3 +82,7 @@
 
 ; spaces for tabs
 (setq-default indent-tabs-mode nil)
+
+(setq treesit-extra-load-path '("~/.emacs.d/tree-sitter"))
+
+(add-hook 'after-init-hook (lambda () (load-theme 'solarized-dark)))

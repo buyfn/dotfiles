@@ -6,28 +6,32 @@
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
-   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
+   ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198"
+    "#657b83"])
  '(backup-directory-alist '(("." . "~/.emacs.d/backups")))
- '(custom-enabled-themes '(solarized-dark))
  '(custom-safe-themes
-   '("fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
+   '("7fea145741b3ca719ae45e6533ad1f49b2a43bf199d9afaee5b6135fd9e6f9b8"
+     default))
  '(inhibit-startup-screen t)
  '(initial-buffer-choice nil)
  '(js-indent-level 2)
  '(js2-mode-show-strict-warnings nil)
  '(ledger-reports
-   '(("test" "ledger bal")
-     ("bal" "%(binary) -f %(ledger-file) bal")
+   '(("test" "ledger bal") ("bal" "%(binary) -f %(ledger-file) bal")
      ("reg" "%(binary) -f %(ledger-file) reg")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)")))
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(company-ledger company tide typescript-mode emmet-mode elixir-mode flycheck js-comint xref-js2 js2-refactor magit racket-mode nim-mode sml-mode ledger-mode exec-path-from-shell js2-mode solarized-theme))
+   '(company company-ledger elixir-mode emmet-mode exec-path-from-shell
+             flycheck js-comint js2-mode js2-refactor ledger-mode
+             magit nim-mode racket-mode sml-mode solarized-theme tide
+             treesit-auto typescript-mode xref-js2))
  '(pascal-indent-level 2)
  '(scroll-bar-mode nil)
  '(sml-indent-level 2)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(typescript-indent-level 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
