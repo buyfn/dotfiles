@@ -1,88 +1,133 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+;;; init.el --- Personal Emacs configuration -*- lexical-binding: t; -*-
 
-;;; Code:
-(package-initialize)
-
+;;;; Package Management
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
+;;;; Custom file
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-(require 'js2-refactor)
-(require 'js-comint)
-(require 'flycheck)
+;;;; General Settings
 
+;; UI chrome
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-startup-screen t)
+
+;; Editing defaults
+(setq-default indent-tabs-mode nil)
 (setq completion-ignore-case t)
 
-; run js2-mode for js files
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-hook 'js2-mode-hook #'js2-refactor-mode)
-(setq js2-skip-preprocessor-directives t)
-(js2r-add-keybindings-with-prefix "C-c C-r")
+;; Backups in a dedicated directory
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq-default flycheck-temp-prefix ".flycheck")
-(setq-default flycheck-disabled-checkers
-	      (append flycheck-disabled-checkers
-		      '(javascript-jshint javascript-standard)))
+;; Line numbers in programming modes
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
-(defun js2-mode-use-eslint-indent ()
-  (let ((json-object-type 'hash-table)
-    (json-config (shell-command-to-string (format  "eslint --print-config %s"
-                               (shell-quote-argument
-                            (buffer-file-name))))))
-    (ignore-errors
-      (setq js-indent-level
-        (aref (gethash "indent" (gethash  "rules" (json-read-from-string json-config))) 1)))))
+;; Auto-revert buffers when files change on disk
+(global-auto-revert-mode 1)
 
-(add-hook 'js2-mode-hook #'js2-mode-use-eslint-indent)
-(add-hook 'sgml-mode-hook 'emmet-mode)
-(add-hook 'css-mode-hook 'emmet-mode)
+;; Mouse support in terminal (drag window borders to resize)
+(xterm-mouse-mode 1)
 
+;; Undo/redo window layouts with C-c left/right
+(winner-mode 1)
 
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+;; Fullscreen toggle
+(global-set-key (kbd "C-<return>") #'toggle-frame-fullscreen)
 
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
-
-(setq company-tooltip-align-annotations t)
-
-(add-hook 'before-save-hook 'tide-format-before-save)
-(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
-
-(add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
-
-; Ledger mode autocomplete
-(add-hook 'ledger-mode-hook
-          (lambda ()
-                 (setq-local tab-always-indent 'complete)
-                 (setq-local completion-cycle-threshold t)
-                 (setq-local ledger-complete-in-steps t)))
-
-; load environment variables
-(exec-path-from-shell-initialize)
-
-; Toggle fullscreen on Ctrl+return
-(global-set-key (kbd "C-<return>") 'toggle-frame-fullscreen)
-
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
-; auto refresh in dired
-(add-hook 'dired-mode-hook 'auto-revert-mode)
-
-; spaces for tabs
-(setq-default indent-tabs-mode nil)
-
+;; Tree-sitter grammar load path
 (setq treesit-extra-load-path '("~/.emacs.d/tree-sitter"))
 
-(add-hook 'after-init-hook (lambda () (load-theme 'solarized-dark)))
+;;;; macOS: inherit shell environment
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :config
+  (exec-path-from-shell-initialize))
+
+;;;; Theme
+(use-package alabaster-themes
+  :config
+  (load-theme 'alabaster-themes-dark t))
+
+;;;; Completion Framework (Vertico + Orderless + Marginalia)
+(use-package vertico
+  :init
+  (vertico-mode))
+
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+;;;; Tree-sitter auto-mode remapping
+(use-package treesit-auto
+  :config
+  (setq treesit-auto-install 'prompt)
+  (global-treesit-auto-mode))
+
+;;;; LSP (eglot — built-in)
+(use-package eglot
+  :hook ((js-ts-mode        . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (tsx-ts-mode        . eglot-ensure))
+  :config
+  (setq eglot-autoshutdown t))
+
+;;;; Version Control
+(use-package magit
+  :bind ("C-x g" . magit-status))
+
+;;;; Language: Web (HTML / CSS)
+(use-package web-mode
+  :mode ("\\.html\\'" "\\.css\\'")
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-enable-css-colorization t))
+
+;;;; Language: JavaScript / TypeScript
+;; js-ts-mode, typescript-ts-mode, tsx-ts-mode are built-in.
+;; treesit-auto handles auto-mode-alist remapping.
+;; eglot connects to typescript-language-server for both JS and TS.
+(setq js-indent-level 2)
+(setq typescript-ts-mode-indent-offset 2)
+
+;;;; JavaScript REPL
+(use-package js-comint
+  :commands (js-comint-repl js-comint-send-last-sexp js-comint-send-region)
+  :bind (:map js-ts-mode-map
+         ("C-c C-z" . js-comint-repl)
+         ("C-c C-e" . js-comint-send-last-sexp)
+         ("C-c C-r" . js-comint-send-region)))
+
+;;;; Language: Racket
+(use-package racket-mode
+  :mode "\\.rkt\\'")
+
+;;;; Language: SML
+(use-package sml-mode
+  :mode "\\.sml\\'"
+  :custom
+  (sml-indent-level 2))
+
+;;;; Language: Ledger
+(use-package ledger-mode
+  :mode "\\.ledger\\'"
+  :hook (ledger-mode . (lambda ()
+                         (setq-local tab-always-indent 'complete)
+                         (setq-local completion-cycle-threshold t)
+                         (setq-local ledger-complete-in-steps t))))
+
+;;;; Language: Pascal
+(add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
+(setq pascal-indent-level 2)
