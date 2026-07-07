@@ -156,3 +156,11 @@
 ;;;; Language: Pascal
 (add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
 (setq pascal-indent-level 2)
+
+;;;; Minibuffer: insert today's date into any prompt with C-c d
+(defun my/insert-date ()
+  "Insert today's date at point, e.g. 2026-07-07."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
+
+(define-key minibuffer-local-map (kbd "C-c d") #'my/insert-date)
