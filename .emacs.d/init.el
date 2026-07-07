@@ -52,6 +52,16 @@
   :config
   (load-theme 'alabaster-themes-dark t))
 
+;;;; Paredit
+(use-package paredit
+  :ensure t
+  :hook ((racket-mode . paredit-mode)
+         (racket-repl-mode . paredit-mode)
+         (emacs-lisp-mode . paredit-mode)))
+(with-eval-after-load 'paredit
+      (define-key paredit-mode-map (kbd "C-c C-]") #'paredit-forward-slurp-sexp)
+      (define-key paredit-mode-map (kbd "C-c C-[") #'paredit-forward-barf-sexp))
+
 ;;;; Completion Framework (Vertico + Orderless + Marginalia)
 (use-package vertico
   :init
@@ -84,6 +94,21 @@
 ;;;; Version Control
 (use-package magit
   :bind ("C-x g" . magit-status))
+
+;;;; Text & Markdown: soft wrap at fill-column (70)
+(use-package markdown-mode
+  :ensure t
+  :mode "\\.md\\'")
+
+(defun my/soft-wrap ()
+  "Visually wrap lines at `fill-column' without inserting newlines."
+  (unless (derived-mode-p 'ledger-mode)
+    (visual-line-mode 1)
+    (visual-fill-column-mode 1)))
+
+(use-package visual-fill-column
+  :ensure t
+  :hook (text-mode . my/soft-wrap))
 
 ;;;; Language: Web (HTML / CSS)
 (use-package web-mode
