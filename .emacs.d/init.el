@@ -52,6 +52,16 @@
   :config
   (load-theme 'alabaster-themes-dark t))
 
+;;;; Paredit
+(use-package paredit
+  :ensure t
+  :hook ((racket-mode . paredit-mode)
+         (racket-repl-mode . paredit-mode)
+         (emacs-lisp-mode . paredit-mode)))
+(with-eval-after-load 'paredit
+      (define-key paredit-mode-map (kbd "C-c C-]") #'paredit-forward-slurp-sexp)
+      (define-key paredit-mode-map (kbd "C-c C-[") #'paredit-forward-barf-sexp))
+
 ;;;; Completion Framework (Vertico + Orderless + Marginalia)
 (use-package vertico
   :init
@@ -84,6 +94,21 @@
 ;;;; Version Control
 (use-package magit
   :bind ("C-x g" . magit-status))
+
+;;;; Text & Markdown: soft wrap at fill-column (70)
+(use-package markdown-mode
+  :ensure t
+  :mode "\\.md\\'")
+
+(defun my/soft-wrap ()
+  "Visually wrap lines at `fill-column' without inserting newlines."
+  (unless (derived-mode-p 'ledger-mode)
+    (visual-line-mode 1)
+    (visual-fill-column-mode 1)))
+
+(use-package visual-fill-column
+  :ensure t
+  :hook (text-mode . my/soft-wrap))
 
 ;;;; Language: Web (HTML / CSS)
 (use-package web-mode
@@ -131,3 +156,11 @@
 ;;;; Language: Pascal
 (add-to-list 'auto-mode-alist '("\\.pp\\'" . pascal-mode))
 (setq pascal-indent-level 2)
+
+;;;; Minibuffer: insert today's date into any prompt with C-c d
+(defun my/insert-date ()
+  "Insert today's date at point, e.g. 2026-07-07."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
+
+(define-key minibuffer-local-map (kbd "C-c d") #'my/insert-date)
