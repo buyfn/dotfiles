@@ -1,0 +1,6 @@
+# Emacs runtime files
+.emacs.d/auto-save-list/
+.emacs.d/backups/
+.emacs.d/elpa/
+.emacs.d/projects
+.emacs.d/transient/
