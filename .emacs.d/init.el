@@ -41,6 +41,17 @@
 ;; Tree-sitter grammar load path
 (setq treesit-extra-load-path '("~/.emacs.d/tree-sitter"))
 
+;;;; Terminal Emacs on macOS: sync kill ring with the system pasteboard
+(unless (display-graphic-p)
+  (when (executable-find "pbcopy")
+    (setq interprogram-cut-function
+          (lambda (text)
+            (call-process-region text nil "pbcopy")))
+    (setq interprogram-paste-function
+          (lambda ()
+            (let ((paste (shell-command-to-string "pbpaste")))
+              (unless (string= paste (car kill-ring)) paste))))))
+
 ;;;; macOS: inherit shell environment
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
