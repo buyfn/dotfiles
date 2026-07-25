@@ -70,6 +70,9 @@
          (racket-repl-mode . paredit-mode)
          (emacs-lisp-mode . paredit-mode)))
 (with-eval-after-load 'paredit
+      ;; Paredit >= 25 binds RET to paredit-RET, which shadows REPL submit
+      ;; bindings (e.g. racket-repl-submit). Unbind it.
+      (define-key paredit-mode-map (kbd "RET") nil)
       (define-key paredit-mode-map (kbd "C-c C-]") #'paredit-forward-slurp-sexp)
       (define-key paredit-mode-map (kbd "C-c C-[") #'paredit-forward-barf-sexp))
 
