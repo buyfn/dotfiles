@@ -76,7 +76,7 @@
       (define-key paredit-mode-map (kbd "C-c C-]") #'paredit-forward-slurp-sexp)
       (define-key paredit-mode-map (kbd "C-c C-[") #'paredit-forward-barf-sexp))
 
-;;;; Completion Framework (Vertico + Orderless + Marginalia)
+;;;; Completion Framework (Vertico + Orderless + Marginalia + Consult)
 (use-package vertico
   :init
   (vertico-mode))
@@ -91,11 +91,45 @@
   :init
   (marginalia-mode))
 
+;; project-find-file equivalent with live preview: the full project file
+;; list appears immediately (synchronous, unlike the async consult-find,
+;; which also lacks preview). Uses consult--read/consult--file-preview,
+;; which are internal API — may need adjusting on major consult updates.
+(defun my/project-find-file-preview ()
+  "Find a file in the current project, previewing the selection."
+  (interactive)
+  (require 'consult)
+  (let* ((project (project-current t))
+         (root (project-root project))
+         (default-directory root))
+    (find-file
+     (consult--read
+      (mapcar (lambda (f) (file-relative-name f root))
+              (project-files project))
+      :prompt "Project file: "
+      :sort t
+      :require-match t
+      :category 'file
+      :state (consult--file-preview)
+      :history 'file-name-history))))
+
+(use-package consult
+  :ensure t
+  :bind (("C-x b" . consult-buffer)
+         ("M-s l" . consult-line)
+         :map project-prefix-map
+         ("f" . my/project-find-file-preview)
+         ;; project-find-regexp replacement with live preview (C-x p g)
+         ("g" . consult-ripgrep)))
+
 ;;;; Tree-sitter auto-mode remapping
+;; One-time auto-mode-alist setup instead of global-treesit-auto-mode:
+;; the global mode re-probes grammar libraries in every new buffer,
+;; which added ~0.6s to every file open (very noticeable in previews).
 (use-package treesit-auto
   :config
   (setq treesit-auto-install 'prompt)
-  (global-treesit-auto-mode))
+  (treesit-auto-add-to-auto-mode-alist 'all))
 
 ;;;; LSP (eglot — built-in)
 (use-package eglot
