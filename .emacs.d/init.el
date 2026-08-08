@@ -91,6 +91,28 @@
   :init
   (marginalia-mode))
 
+;; In-buffer completion UI.  Keep it local to Racket buffers for now;
+;; `racket-xp-mode' supplies the semantic completion candidates.
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
+  (corfu-cycle t)
+  :hook (racket-mode . corfu-mode)
+  :config
+  ;; Avoid capturing RET when an automatic completion popup is visible.
+  (keymap-unset corfu-map "RET"))
+
+;; Corfu needs an overlay-based popup in terminal Emacs before Emacs 31.
+(use-package corfu-terminal
+  :ensure t
+  :after corfu
+  :config
+  (unless (display-graphic-p)
+    (corfu-terminal-mode 1)))
+
 ;; project-find-file equivalent with live preview: the full project file
 ;; list appears immediately (synchronous, unlike the async consult-find,
 ;; which also lacks preview). Uses consult--read/consult--file-preview,
@@ -185,7 +207,8 @@
 
 ;;;; Language: Racket
 (use-package racket-mode
-  :mode "\\.rkt\\'")
+  :mode "\\.rkt\\'"
+  :hook (racket-mode . racket-xp-mode))
 
 ;;;; Language: SML
 (use-package sml-mode
