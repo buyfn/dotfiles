@@ -129,7 +129,7 @@
 (use-package treesit-auto
   :config
   (setq treesit-auto-install 'prompt)
-  (treesit-auto-add-to-auto-mode-alist 'all))
+  (treesit-auto-add-to-auto-mode-alist))
 
 ;;;; LSP (eglot — built-in)
 (use-package eglot
