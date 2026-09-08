@@ -105,8 +105,9 @@
   ;; Avoid capturing RET when an automatic completion popup is visible.
   (keymap-unset corfu-map "RET"))
 
-;; Corfu needs an overlay-based popup in terminal Emacs before Emacs 31.
+;; Use the terminal popup fallback only without native child-frame support.
 (use-package corfu-terminal
+  :unless (featurep 'tty-child-frames)
   :ensure t
   :after corfu
   :config
