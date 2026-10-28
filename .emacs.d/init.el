@@ -166,6 +166,17 @@
 (use-package magit
   :bind ("C-x g" . magit-status))
 
+;;;; AI agents (Agent Client Protocol)
+;; Install the adapter for each agent you want to use:
+;; npm install -g @agentclientprotocol/codex-acp
+;; npm install -g @agentclientprotocol/claude-agent-acp
+(use-package agent-shell
+  :ensure t
+  :bind (("C-c a a" . agent-shell)
+         ("C-c a r" . agent-shell-send-region)
+         ("C-c a f" . agent-shell-send-current-file)
+         ("C-c a p" . agent-shell-prompt-compose)))
+
 ;;;; Text & Markdown: soft wrap at fill-column (70)
 (use-package markdown-mode
   :ensure t
