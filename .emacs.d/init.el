@@ -166,6 +166,22 @@
 (use-package magit
   :bind ("C-x g" . magit-status))
 
+;;;; Terminal emulator
+(use-package eat
+  :ensure t
+  :commands (eat)
+  ;; Customize the numbered faces: Eat's color-name aliases do not reliably
+  ;; accept deferred face specs.  Reuse theme faces with actual accent colors.
+  :custom-face
+  (eat-term-color-1 ((t (:inherit error))))
+  (eat-term-color-2 ((t (:inherit font-lock-string-face))))
+  (eat-term-color-3 ((t (:inherit warning))))
+  (eat-term-color-4 ((t (:inherit font-lock-function-name-face))))
+  (eat-term-color-6 ((t (:inherit minibuffer-prompt))))
+  (eat-term-color-9 ((t (:inherit error))))
+  (eat-term-color-10 ((t (:inherit font-lock-string-face))))
+  (eat-term-color-12 ((t (:inherit font-lock-function-name-face)))))
+
 ;;;; AI agents (Agent Client Protocol)
 ;; Install the adapter for each agent you want to use:
 ;; npm install -g @agentclientprotocol/codex-acp

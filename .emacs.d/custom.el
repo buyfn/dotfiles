@@ -15,7 +15,7 @@
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)")))
  '(package-selected-packages
-   '(agent-shell alabaster-themes consult corfu-terminal
+   '(agent-shell alabaster-themes consult corfu-terminal eat
                  exec-path-from-shell js-comint ledger-mode magit
                  marginalia markdown-mode orderless paredit
                  racket-mode reverse-im solarized-theme treesit-auto
