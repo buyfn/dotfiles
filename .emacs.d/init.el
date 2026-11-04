@@ -170,6 +170,8 @@
 (use-package eat
   :ensure t
   :commands (eat)
+  ;; TUIs such as Claude Code emit NBSPs; don't underline them.
+  :hook (eat-mode . (lambda () (setq-local nobreak-char-display nil)))
   :config
   ;; Eat's pty has no erase character, so fish ignores Backspace.
   ;; Set it before the program starts; fish's config runs too late.
