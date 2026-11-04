@@ -172,6 +172,13 @@
   :commands (eat)
   ;; TUIs such as Claude Code emit NBSPs; don't underline them.
   :hook (eat-mode . (lambda () (setq-local nobreak-char-display nil)))
+  :config
+  ;; Eat's pty has no erase character, so fish ignores Backspace.
+  ;; Set it before the program starts; fish's config runs too late.
+  (define-advice eat-exec (:filter-args (args) set-erase-char)
+    (pcase-let ((`(,buffer ,name ,command ,startfile ,switches) args))
+      (list buffer name "/bin/sh" startfile
+            `("-c" "stty erase '^?'; exec \"$@\"" "sh" ,command ,@switches))))
   ;; Customize the numbered faces: Eat's color-name aliases do not reliably
   ;; accept deferred face specs.  Reuse theme faces with actual accent colors.
   :custom-face
