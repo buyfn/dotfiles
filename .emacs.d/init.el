@@ -170,6 +170,8 @@
 (use-package eat
   :ensure t
   :commands (eat)
+  ;; TUIs such as Claude Code emit NBSPs; don't underline them.
+  :hook (eat-mode . (lambda () (setq-local nobreak-char-display nil)))
   ;; Customize the numbered faces: Eat's color-name aliases do not reliably
   ;; accept deferred face specs.  Reuse theme faces with actual accent colors.
   :custom-face
