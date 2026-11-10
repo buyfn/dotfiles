@@ -205,7 +205,8 @@
 ;;;; Text & Markdown: soft wrap at fill-column (70)
 (use-package markdown-mode
   :ensure t
-  :mode "\\.md\\'")
+  :mode "\\.md\\'"
+  :hook (markdown-mode . display-line-numbers-mode))
 
 (defun my/soft-wrap ()
   "Visually wrap lines at `fill-column' without inserting newlines."
