@@ -91,8 +91,7 @@
   :init
   (marginalia-mode))
 
-;; In-buffer completion UI.  Keep it local to Racket buffers for now;
-;; `racket-xp-mode' supplies the semantic completion candidates.
+;; In-buffer completion UI.  Racket XP and Eglot supply semantic candidates.
 (use-package corfu
   :ensure t
   :custom
@@ -100,7 +99,8 @@
   (corfu-auto-delay 0.2)
   (corfu-auto-prefix 2)
   (corfu-cycle t)
-  :hook (racket-mode . corfu-mode)
+  :hook ((racket-mode . corfu-mode)
+         (go-ts-mode . corfu-mode))
   :config
   ;; Avoid capturing RET when an automatic completion popup is visible.
   (keymap-unset corfu-map "RET"))
@@ -158,7 +158,8 @@
 (use-package eglot
   :hook ((js-ts-mode        . eglot-ensure)
          (typescript-ts-mode . eglot-ensure)
-         (tsx-ts-mode        . eglot-ensure))
+         (tsx-ts-mode        . eglot-ensure)
+         (go-ts-mode         . eglot-ensure))
   :config
   (setq eglot-autoshutdown t))
 
@@ -227,6 +228,33 @@
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-enable-auto-pairing t)
   (setq web-mode-enable-css-colorization t))
+
+;;;; Language: Go
+;; Make Go tools available to both Emacs and its subprocesses.
+(let ((go-bin (expand-file-name "~/go/bin")))
+  (add-to-list 'exec-path go-bin)
+  (unless (member go-bin (parse-colon-path (getenv "PATH")))
+    (setenv "PATH" (concat go-bin path-separator (getenv "PATH")))))
+
+(defun my/go-before-save ()
+  "Organize imports and format Go buffers managed by Eglot."
+  (when (eglot-managed-p)
+    (call-interactively #'eglot-code-action-organize-imports)
+    (eglot-format-buffer)))
+
+(defun my/go-save-setup ()
+  "Use Go indentation and install a buffer-local save hook."
+  (setq-local indent-tabs-mode t)
+  (add-hook 'before-save-hook #'my/go-before-save -10 t))
+
+(use-package go-ts-mode
+  :ensure nil
+  :mode "\\.go\\'"
+  :hook (go-ts-mode . my/go-save-setup)
+  :init
+  ;; One-time setup: M-x treesit-install-language-grammar RET go RET.
+  (add-to-list 'treesit-language-source-alist
+               '(go "https://github.com/tree-sitter/tree-sitter-go")))
 
 ;;;; Language: JavaScript / TypeScript
 ;; js-ts-mode, typescript-ts-mode, tsx-ts-mode are built-in.
