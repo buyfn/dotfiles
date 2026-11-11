@@ -10,6 +10,15 @@
 
 ;;;; General Settings
 
+;; Keep English shortcuts when using the system Russian keyboard layout.
+(use-package reverse-im
+  :ensure t
+  :demand t
+  :custom
+  (reverse-im-input-methods '("russian-computer"))
+  :config
+  (reverse-im-mode 1))
+
 ;; UI chrome
 (menu-bar-mode -1)
 ; (tool-bar-mode -1)
